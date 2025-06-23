@@ -8,12 +8,15 @@ import { toast } from "sonner";
 import { Minus, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 
-export default function product({ id }: { id: string }) {
+export default function product() {
   const [product, setProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const addToCart = useCartStore((state) => state.addToCart);
   const router = useRouter();
+    const params = useParams();
+  const slug = params.slug;
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -46,7 +49,7 @@ export default function product({ id }: { id: string }) {
   };
 
   useEffect(() => {
-    fetch(`https://dummyjson.com/products/${id}`)
+    fetch(`https://dummyjson.com/products/${slug}`)
       .then((res) => res.json())
       .then((data) => setProduct(data));
   }, []);
