@@ -1,25 +1,15 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCartStore } from "@/lib/store/cartStore";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
-
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const { items, addToCart, removeFromCart, clearCart } = useCartStore();
@@ -27,6 +17,9 @@ export default function Page() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [orderId, setOrderId] = useState("");
+  const router = useRouter();
+   console.log(items);
 
   const subtotal = items.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -34,27 +27,65 @@ export default function Page() {
   );
   const total = subtotal + shippingCost;
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (!name || !phone || !address) {
       toast.warning(" আপনার নাম, ফোন নাম্বার, ঠিকানা দিতে হবে।");
       return;
     }
+    if (items.length === 0) {
+      toast.warning("আপনার কার্টে কোন পণ্য নেই।");
+      return;
+    }
+    if (shippingCost <= 0) {
+      toast.warning("দয়া করে শিপিং খরচ সিলেক্ট করুন।");
+      return;
+    }
+    if (total <= 0) {
+      toast.warning("আপনার অর্ডার মোট শূন্য।");
+      return;
+    }
+    // Prepare order data
+    const orderItems = items.map((item) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image: item.image,
+      quantity: item.quantity,
+    }));
 
-    const order = {
-      name,
-      phone,
-      address,
-      items,
-      shippingCost,
-      total,
-    };
-
-    console.log("Placing order:", order);
-
-    // TODO: Send to backend here
-    toast.success("✅ Order placed!");
-    clearCart();
+    // Create order object
+    const res = await fetch("/api/orders/createorder", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        phone,
+        address,
+        items: orderItems,
+        subtotal,
+        shippingCost,
+        total,
+      }),
+    });
+    if (!res.ok) {
+      toast.error("❌ Order failed. Please try again.");
+      return;
+    }
+    await res.json().then((data) => {
+      setOrderId(data.orderId);
+      toast.success("✅ Order placed successfully!");
+    });
   };
+  useEffect(() => {
+    if (orderId) {
+      setTimeout(() => {
+        clearCart();
+        router.push(`/order/${orderId}`);
+      }, 2000);
+    }
+  }, [orderId]);
 
   const updateQuantity = (id: string, change: number) => {
     const item = items.find((i) => i.id === id);
@@ -81,21 +112,33 @@ export default function Page() {
             <CardTitle className="text-lg">Billing Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            <Label htmlFor="name" className="block mb-2">
+              Name
+            </Label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="আপনার নাম লিখুন"
+              required
             />
+            <Label htmlFor="phone" className="block mb-2">
+              Phone Number
+            </Label>
             <Input
-              type="tel"
+              type="number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="আপনার ফোন নাম্বার লিখুন"
+              required
             />
+            <Label htmlFor="address" className="block mb-2">
+              Address
+            </Label>
             <Input
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="আপনার ঠিকানা লিখুন"
+              required
             />
           </CardContent>
         </Card>
@@ -114,8 +157,9 @@ export default function Page() {
                   className="flex justify-between py-2 items-center"
                 >
                   <div>
-                    <div className="text-gray-500">{item.title} <span>x {item.quantity}</span></div> 
-                   
+                    <div className="text-gray-500">
+                      {item.title} <span>x {item.quantity}</span>
+                    </div>
                   </div>
                   <div className="font-medium">
                     ${item.price * item.quantity}
@@ -132,19 +176,35 @@ export default function Page() {
 
             {/* Shipping Selection */}
             <div>
-              <span className="font-semibold block mb-1">Shipping</span>
-              <Select
+              <span className="font-semibold block mb-3">Shipping Cost</span>
+
+              <RadioGroup
                 onValueChange={(value) => setShippingCost(parseInt(value))}
                 defaultValue="60"
               >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Shipping" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="60">Inside Dhaka – ৳60</SelectItem>
-                  <SelectItem value="120">Outside Dhaka – ৳120</SelectItem>
-                </SelectContent>
-              </Select>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="60" id="60" />
+                  <Label htmlFor="60">Inside Dhaka – ৳60</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="120" id="120" />
+                  <Label htmlFor="120">Outside Dhaka – ৳120</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            {/* Payment Types */}
+            <div>
+              <span className="font-semibold block mb-3">Payment Type</span>
+
+              <RadioGroup defaultValue="cash-on-delivery">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="cash-on-delivery"
+                    id="cash-on-delivery"
+                  />
+                  <Label htmlFor="cash-on-delivery">Cash On Delivery</Label>
+                </div>
+              </RadioGroup>
             </div>
 
             {/* Total */}

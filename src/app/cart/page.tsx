@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import {useRouter} from "next/navigation";
 import Image from "next/image";
+import NavBar from "@/components/navBar";
 
 export default function CartPage() {
   const { items, removeFromCart, clearCart } = useCartStore();
@@ -20,7 +21,9 @@ export default function CartPage() {
     return <p className="p-4 w-full h-96 text-center mt-18 text-white">Your cart is empty.</p>;
 
   return (
+    
     <div className="p-4 max-w-3xl mx-auto bg-white rounded-lg space-y-4 mt-18 md:mt-20">
+     
       <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
 
       {items.map((item) => (

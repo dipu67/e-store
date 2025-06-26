@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/navBar";
 import Footer from "@/components/footer";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,15 +25,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col  bg-opacity-10 bg-green-900 text-gray-900 antialiased font-sans`}
       >
-         <NavBar />
-         <main className="flex-grow">{children}</main>
-        <Toaster position="top-right" richColors/>
+        <NavBar />
+        {/* Check if the current route is an admin route */}
+        <main className="flex-grow">{children}</main>
         <Footer />
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );

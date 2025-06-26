@@ -1,14 +1,18 @@
-// components/Footer.tsx
+"use client";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 export default function Footer() {
-  return (
-    <footer className="bg-gray-800 text-white py-4 mt-6">
+  const pathname = usePathname();
+    const isAdminRoute = pathname?.startsWith("/admin");
+  if (!isAdminRoute) {
+     return (
+    <footer id="contact" className="bg-gray-800 text-white py-4 mt-6">
       <div className="container mx-auto text-center">
         <p className="text-sm flex justify-center items-center">
           Follow us on
           <a
-            href="https://twitter.com"
+            href="https://facebook.com"
             className="text-blue-400 hover:underline ml-1"
           >
             Facebook
@@ -21,4 +25,5 @@ export default function Footer() {
       </div>
     </footer>
   );
+  }
 }
