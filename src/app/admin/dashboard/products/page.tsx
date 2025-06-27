@@ -19,14 +19,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
-type ProductFormData = {
-  title: string;
-  description: string;
-  price: number;
-  discountPrice: number;
-  image: string;
-  stock: number;
-};
 
 export default function page() {
   const [open, setOpen] = React.useState(false);

@@ -41,6 +41,15 @@ import { toast } from "sonner";
 type Props = {
   onUpdateStats: () => void;
 };
+ type Product = {
+    title: String;
+    slug: String;
+    price: Number;
+    discountPrice: Number;
+    image: String;
+    stock: Number;
+    cecreatedAt: string;
+  };
 export default function DataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -63,17 +72,8 @@ export default function DataTable() {
         console.error("Error fetching payments data:", error);
       });
   }, []);
-  console.log("Payments Data:", data);
 
-  type Product = {
-    title: String;
-    slug: String;
-    price: Number;
-    discountPrice: Number;
-    image: String;
-    stock: Number;
-    cecreatedAt: string;
-  };
+ 
 
 
   const columns: ColumnDef<Product>[] = [
@@ -121,12 +121,13 @@ export default function DataTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
+            
             Product Name
             <ArrowUpDown />
           </Button>
         );
       },
-      cell: ({ row }) => <div className="">{row.getValue("title")}</div>,
+      cell: ({ row }) => <div className=""><a href={`/products/${row.original.slug}`} className="text-blue-600 hover:underline">{row.getValue("title")}</a></div>,
     },
     {
       accessorKey: "price",
@@ -183,10 +184,33 @@ export default function DataTable() {
             
               <DropdownMenuItem
                 onClick={() =>
-                  (window.location.href = `/order/${action.slug}`)
+                  (window.location.href = `/products/${action.slug}`)
                 }
               >
                 View Order
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    fetch(`/api/products/delete-product/${action.slug}`, {
+                      method: "DELETE",
+                    })
+                      .then((res) => res.json())
+                      .then(() => {
+                        toast.success("Product deleted successfully");
+                        setData((prev) =>
+                          prev.filter((item) => item.slug !== action.slug)
+                        );
+                      })
+                      .catch((error) => {
+                        console.error("Error deleting product:", error);
+                        toast.error("Failed to delete product");
+                      });
+                  }}
+                >
+                  Delete
+                </Button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -162,7 +162,7 @@ export default function Page() {
                     </div>
                   </div>
                   <div className="font-medium">
-                    ${item.price * item.quantity}
+                    ৳{item.price * item.quantity}
                   </div>
                 </div>
               ))}
@@ -171,7 +171,7 @@ export default function Page() {
             {/* Subtotal */}
             <div className="flex justify-between font-semibold pt-2">
               <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>৳{subtotal.toFixed(2)}</span>
             </div>
 
             {/* Shipping Selection */}
@@ -210,7 +210,7 @@ export default function Page() {
             {/* Total */}
             <div className="flex justify-between font-bold border-t pt-4 text-lg text-gray-900 dark:text-white">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>৳{total.toFixed(2)}</span>
             </div>
 
             {/* Place Order Button */}

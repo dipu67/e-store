@@ -62,9 +62,6 @@ export default function TrackingPage() {
       <p><strong>Phone:</strong> {order.phone}</p>
       <p><strong>Address:</strong> {order.address}</p>
       <p><strong>Status:</strong> {order.status}</p>
-      <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
-      <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
-      <p><strong>Delivery Status:</strong> {order.deliveryStatus}</p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Items</h2>
       <ul className="space-y-3">
@@ -76,7 +73,7 @@ export default function TrackingPage() {
               <Image src={item.image} alt={item.title} width={64} height={64} className="w-16 h-16 object-cover rounded" />
               <div>
                 <p className="font-semibold">{item.title}</p>
-                <p>Price: ${item.price}</p>
+                <p>Price: ৳{item.price}</p>
                 <p>Quantity: {item.quantity}</p>
               </div>
             </div>
@@ -85,9 +82,9 @@ export default function TrackingPage() {
       </ul>
 
       <div className="mt-6 border-t pt-4 text-right space-y-2">
-        <p><strong>Subtotal:</strong> ${order.subtotal.toFixed(2)}</p>
-        <p><strong>Shipping:</strong> ${order.shippingCost.toFixed(2)}</p>
-        <p className="text-lg font-bold"><strong>Total:</strong> ${order.total.toFixed(2)}</p>
+        <p><strong>Subtotal:</strong> ৳{order.subtotal.toFixed(2)}</p>
+        <p><strong>Shipping:</strong> ৳{order.shippingCost.toFixed(2)}</p>
+        <p className="text-lg font-bold"><strong>Total:</strong> ৳{order.total.toFixed(2)}</p>
       </div>
     </div>
   );

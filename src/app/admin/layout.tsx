@@ -1,8 +1,15 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import Auth from "@/components/auth";
 export const metadata = {
   title: "Admin Dashboard",
   description: "Admin dashboard layout",
@@ -17,11 +24,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return <div className="flex justify-center items-center  w-full h-screen"><Auth className="w-96" /></div>;
+  }
   return (
     <html lang="en">
       <body
@@ -35,13 +46,12 @@ export default function AdminLayout({
             } as React.CSSProperties
           }
         >
+          <AppSidebar variant="inset" />
+          <SidebarInset>
+            <SiteHeader />
 
-        <AppSidebar variant="inset" />
-         <SidebarInset>
-           <SiteHeader />
-          
-        <main>{children}</main>
-         </SidebarInset>
+            <main>{children}</main>
+          </SidebarInset>
         </SidebarProvider>
       </body>
     </html>
