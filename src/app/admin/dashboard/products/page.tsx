@@ -37,7 +37,7 @@ export default function page() {
     const formData = new FormData(e.currentTarget);
 
     const title = formData.get("title");
-    const description = formData.get("discription");
+    const description = formData.get("description");
     const price = formData.get("price");
     const discountPrice = formData.get("discountPrice");
     const image = formData.get("image");
@@ -138,10 +138,10 @@ export default function page() {
                       />
                     </div>
                     <div className="grid gap-3">
-                      <Label htmlFor="discription">Discription</Label>
+                      <Label htmlFor="description">Description</Label>
                       <Textarea
-                        id="discription"
-                        name="discription"
+                        id="description"
+                        name="description"
                         placeholder="Enter product description"
                         required
                       />

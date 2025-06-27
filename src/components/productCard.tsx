@@ -83,7 +83,7 @@ export default function card() {
                 loading="lazy"
               />
             </Link>
-            <CardTitle className="text-md md:text-lg font-semibold">
+            <CardTitle className="text-md md:text-lg font-semibold mt-2">
               {product.title}
             </CardTitle>
           </CardHeader>
