@@ -71,15 +71,15 @@ export default function card() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4 md:mx-4 md:mt-4  p-2">
       {products.map((product:any) => (
-         <Card key={product.id} className="w-full h-full shadow-md ">
+         <Card key={product.id} className="w-full h-full gap-2 shadow-md ">
           <CardHeader className="p-4">
             <Link href={`/products/${product.slug}`} className="block">
               <Image
                 src={product.image}
                 alt={product.title}
                 className="w-full h-full object-cover rounded-t-lg"
-                width={1000}
-                height={1000}
+                width={400}
+                height={400}
                 loading="lazy"
               />
             </Link>

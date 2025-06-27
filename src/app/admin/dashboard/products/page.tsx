@@ -19,10 +19,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
+type ProductFormData = {
+  title: string;
+  description: string;
+  price: number;
+  discountPrice: number;
+  image: string;
+  stock: number;
+};
+
 export default function page() {
   const [open, setOpen] = React.useState(false);
   const [loadding, setLoading] = React.useState(false);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e:any) => {
     setLoading(true);
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -34,7 +43,7 @@ export default function page() {
     const image = formData.get("image");
     const stock = formData.get("stock");
     try {
-      const response = await fetch("/api/product/createproduct", {
+      const response = await fetch("/api/products/createproduct", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -184,7 +193,7 @@ export default function page() {
                     <DialogClose asChild>
                       <Button variant="outline">Cancel</Button>
                     </DialogClose>
-                    <Button type="submit" className=" cursor-pointer">
+                    <Button type="submit" onSubmit={handleSubmit} className=" cursor-pointer">
                       {loadding ? (
                         <Loader2 className="animate-spin w-4 h-4 mr-2" />
                       ) : "Add Product"}

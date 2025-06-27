@@ -30,7 +30,7 @@ export default function CartPage() {
         <Card key={item.id} className="flex flex-row items-center justify-between p-4">
           <div className="flex gap-4 items-center">
             <Image
-              src={item.thumbnail}
+              src={item.image}
               alt={item.title}
               className="w-20 h-20 object-cover rounded"
               width={80}
